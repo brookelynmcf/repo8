@@ -63,7 +63,7 @@ class Tourist(object):
         self.arrived = bool
     def __str__(self):
         pass
-def get_input(question):
+def get_number_lots(question):
     while True:
         try:
             answer = int(input(question))
@@ -73,9 +73,19 @@ def get_input(question):
         if answer <2 or answer > 11:
             print("The number you have used is out of the correct range.")
             continue
+def get_number_tourists(question):
+    while True:
+        try:
+            answer = int(input(question))
+        except ValueError:
+            print("Please, enter an integer.")
+            continue
+        if answer < 0 or answer > 20:
+            print("The number you have entered is not within the correct range.(0-20)")
+            continue
 
-
-input_lots = get_input("How many lots does the park have? (anser must be between 2 and 11)")
+input_tourists = get_number_tourists("How many tourists are in the park initially? (answer must be between 0 and 20)")
+input_lots = get_number_lots("How many lots does the park have? (answer must be between 2 and 11)")
 
 
 
