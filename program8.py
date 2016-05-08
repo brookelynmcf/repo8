@@ -63,6 +63,19 @@ class Tourist(object):
         self.arrived = bool
     def __str__(self):
         pass
+def get_input(question):
+    while True:
+        try:
+            answer = int(input(question))
+        except ValueError:
+            print("Please, enter an integer.")
+            continue
+        if answer <2 or answer > 11:
+            print("The number you have used is out of the correct range.")
+            continue
+
+
+input_lots = get_input("How many lots does the park have? (anser must be between 2 and 11)")
 
 
 
