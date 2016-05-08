@@ -50,7 +50,7 @@ class Park(object):
                 if lot.lot_number == random_start_lot.lot_number:
                     k.remove(lot)
             random_dest_lot = random.choice(k)
-            random_tourist = Tourist(random.choice(self.lots),random_dest_lot,person)
+            random_tourist = Tourist(random_start_lot,random_dest_lot,person)
             tourist_list.append(random_tourist)
             random_start_lot.register_tourist(random_tourist)
         return tourist_list
