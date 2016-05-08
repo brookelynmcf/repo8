@@ -35,9 +35,8 @@ class Park(object):
     def step(self):
         pass
 
-class ParkingLot(Park):
+class ParkingLot(object):
     def __init__(self, lot_number):
-        Park.__init__(self,lots, tourist_num)
         self.lot_number = lot_number
     def __str__(self):
         pass
@@ -45,5 +44,25 @@ class ParkingLot(Park):
         pass
     def register_tourist(self,tourist):
         return self.wait_list + tourist
+
+class Tram(object):
+    def __init__(self,current_lot,lots):
+        self.current_lot = current_lot
+        self.direction = direction
+        self.lots = lots
+        self.tourist = tourists
+    def __str__(self):
+        pass
+    def move(self):
+        pass
+
+class Tourist(object):
+    def __init__(self, start_lot, dest_lot):
+        self.start = start_lot
+        self. destination = dest_lot
+        self.arrived = bool
+    def __str__(self):
+        pass
+
 
 
