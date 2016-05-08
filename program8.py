@@ -23,10 +23,11 @@ import copy
 class Park(object):
     def __init__(self,lots = 2, tourist_num = 0 ):
         self.lots = self.__make_lots_list(lots)
-        self.tram = Tram(self.lots[0],self.lots)
         self.tourists = self.__make_tourist_list(tourist_num)
+        self.tram = Tram(self.lots[0],self.lots,self.tourists)
         self.lots_total = len(self.lots)
         self.tourist_num = tourist_num
+        self.arrived_tourist = []
         #self.wait_list = wait_list
     def __str__(self):
         lot = 0
@@ -53,12 +54,11 @@ class Park(object):
             tourist_list.append(Tourist(random.choice(self.lots),random_dest_lot))
         return tourist_list
     def dest_tourist_list(self):
-        dest_list_true = []
         for person in self.tourists:
             if self.tram.current_lot.lot_number == person.destination.lot_number:
                 person.arrived = True
-                dest_list_true.append(person.arrived)
-        return dest_list_true
+                self.arrived_tourist.append(person.arrived)
+        return self.arrived_tourist
 
 
 class ParkingLot(object):
@@ -74,24 +74,35 @@ class ParkingLot(object):
 
 
 class Tram(object):
-    def __init__(self,current_lot,lots):
+    def __init__(self,current_lot,lots,tourists):
         self.current_lot = current_lot
         self.direction  = 0
         self.lots = lots
-        #self.tourist = tourists
+        self.tourists = tourists
+        self.tram_tourists = []
     def __str__(self):
         pass
     def move(self):
         if self.current_lot == self.lots[0]:
             self.current_lot = self.lots[1]
             self.direction = 1
+            self.tourists_on_or_off_tram()
             return
         if self.current_lot == self.lots[len(self.lots)- 1]:
             self.current_lot = self.lots[len(self.lots)-2]
             self.direction = -1
+            self.tourists_on_or_off_tram()
             return
         currentlotindex = self.lots.index(self.current_lot)
         self.current_lot = self.lots[currentlotindex+self.direction]
+        self.tourists_on_or_off_tram()
+    def tourists_on_or_off_tram(self):
+        for tourist in self.tourists:
+            if tourist.start.lot_number == self.current_lot.lot_number and tourist not in self.tram_tourists:
+                self.tram_tourists.append(tourist)
+        for tourist in self.tram_tourists:
+            if tourist.destination.lot_number == self.current_lot.lot_number:
+                self.tram_tourists.remove(tourist)
 
 
 
@@ -133,7 +144,8 @@ input_lots = get_number_lots("How many lots does the park have? (answer must be 
 
 
 mypark = Park(lots = input_lots,tourist_num= input_tourists)
-while len(mypark.dest_tourist_list()) < len(mypark.tourists):
+arrived_list = mypark.dest_tourist_list()
+while len(arrived_list) < len(mypark.tourists):
     mypark.tram.move()
     arrived_list = mypark.dest_tourist_list()
 print("Fart")
