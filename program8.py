@@ -26,6 +26,7 @@ class Park(object):
         self.tourist = tourist
         self.lots_total = lots_total
         self.tourist_num = tourist_num
+        self.wait_list = wait_list
     def __str__(self):
         lot = 0
         while lot <= lots_total:
@@ -33,4 +34,16 @@ class Park(object):
         print("{}==".format(lot))
     def step(self):
         pass
+
+class ParkingLot(Park):
+    def __init__(self, lot_number):
+        Park.__init__(self,lots, tourist_num)
+        self.lot_number = lot_number
+    def __str__(self):
+        pass
+    def __repr__(self):
+        pass
+    def register_tourist(self,tourist):
+        return self.wait_list + tourist
+
 
