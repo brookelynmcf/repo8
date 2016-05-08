@@ -18,6 +18,7 @@
 ##
 ########################################################################
 import random
+import copy
 
 class Park(object):
     def __init__(self,lots = 2, tourist_num = 0 ):
@@ -44,10 +45,20 @@ class Park(object):
         tourist_list = []
         for person in range(num_tourist):
             random_start_lot = random.choice(self.lots)
-            k = self.lots
-            k.remove(random_start_lot)
+            k = copy.deepcopy(self.lots)
+            for lot in k:
+                if lot.lot_number == random_start_lot.lot_number:
+                    k.remove(lot)
             random_dest_lot = random.choice(k)
             tourist_list.append(Tourist(random.choice(self.lots),random_dest_lot))
+        return tourist_list
+    def dest_tourist_list(self):
+        dest_list_true = []
+        for person in self.tourists:
+            if self.tram.current_lot.lot_number == person.destination.lot_number:
+                person.arrived = True
+                dest_list_true.append(person.arrived)
+        return dest_list_true
 
 
 class ParkingLot(object):
@@ -71,12 +82,24 @@ class Tram(object):
     def __str__(self):
         pass
     def move(self):
-        pass
+        if self.current_lot == self.lots[0]:
+            self.current_lot = self.lots[1]
+            self.direction = 1
+            return
+        if self.current_lot == self.lots[len(self.lots)- 1]:
+            self.current_lot = self.lots[len(self.lots)-2]
+            self.direction = -1
+            return
+        currentlotindex = self.lots.index(self.current_lot)
+        self.current_lot = self.lots[currentlotindex+self.direction]
+
+
+
 
 class Tourist(object):
     def __init__(self, start_lot, dest_lot):
         self.start = start_lot
-        self. destination = dest_lot
+        self.destination = dest_lot
         self.arrived = False
     def __str__(self):
         pass
@@ -108,7 +131,11 @@ def get_number_tourists(question):
 input_tourists = get_number_tourists("How many tourists are in the park initially? (answer must be between 0 and 20)")
 input_lots = get_number_lots("How many lots does the park have? (answer must be between 2 and 11)")
 
+
 mypark = Park(lots = input_lots,tourist_num= input_tourists)
+while len(mypark.dest_tourist_list()) < len(mypark.tourists):
+    mypark.tram.move()
+    arrived_list = mypark.dest_tourist_list()
 print("Fart")
 
 
