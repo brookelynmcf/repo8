@@ -20,11 +20,11 @@
 import random
 
 class Park(object):
-    def __init__(self,lots = 2, tourist_num = 0 ):
+    def __init__(self,lots = [], tourist_num = 0 ):
         self.lots = lots
         self.tram = tram
         self.tourist = tourist
-        self.lots_total = lots_total
+        self.lots_total = len(lots_total)
         self.tourist_num = tourist_num
         self.wait_list = wait_list
     def __str__(self):
@@ -73,6 +73,8 @@ def get_number_lots(question):
         if answer <2 or answer > 11:
             print("The number you have used is out of the correct range.")
             continue
+        else:
+            return answer
 def get_number_tourists(question):
     while True:
         try:
@@ -83,9 +85,17 @@ def get_number_tourists(question):
         if answer < 0 or answer > 20:
             print("The number you have entered is not within the correct range.(0-20)")
             continue
+        else:
+            return answer
 
 input_tourists = get_number_tourists("How many tourists are in the park initially? (answer must be between 0 and 20)")
 input_lots = get_number_lots("How many lots does the park have? (answer must be between 2 and 11)")
+lots_lst = []
+for number in range(input_lots):
+    lots_lst.append(ParkingLot(number+1))
+
+
+mypark = Park(lots_lst)
 
 
 
