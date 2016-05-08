@@ -28,7 +28,6 @@ class Park(object):
         self.lots_total = len(self.lots)
         self.tourist_num = tourist_num
         self.arrived_tourist = []
-        #self.wait_list = wait_list
     def __str__(self):
         lot = 0
         while lot <= lots_total:
@@ -51,7 +50,9 @@ class Park(object):
                 if lot.lot_number == random_start_lot.lot_number:
                     k.remove(lot)
             random_dest_lot = random.choice(k)
-            tourist_list.append(Tourist(random.choice(self.lots),random_dest_lot))
+            random_tourist = Tourist(random.choice(self.lots),random_dest_lot,person)
+            tourist_list.append(random_tourist)
+            random_start_lot.register_tourist(random_tourist)
         return tourist_list
     def calc_arrived_tourist(self):
         for person in self.tourists:
@@ -63,13 +64,17 @@ class Park(object):
 class ParkingLot(object):
     def __init__(self, lot_number):
         self.lot_number = lot_number
-        #self.wait_list = wait_list
+        self.wait_list = []
     def __str__(self):
         pass
     def __repr__(self):
         pass
     def register_tourist(self,tourist):
-        return self.wait_list + tourist
+        self.wait_list.append(tourist)
+    def remove_from_waitlist(self,tourist):
+        for person in self.wait_list:
+            if person.tourist_id == tourist.tourist_id:
+                self.wait_list.remove(tourist)
 
 
 class Tram(object):
@@ -83,36 +88,38 @@ class Tram(object):
         pass
     def move(self):
         if self.current_lot == self.lots[0]:
+            self.tourists_on_or_off_tram()
             self.current_lot = self.lots[1]
             self.direction = 1
-            self.tourists_on_or_off_tram()
             return
         if self.current_lot == self.lots[len(self.lots)- 1]:
+            self.tourists_on_or_off_tram()
             self.current_lot = self.lots[len(self.lots)-2]
             self.direction = -1
-            self.tourists_on_or_off_tram()
             return
         currentlotindex = self.lots.index(self.current_lot)
-        self.current_lot = self.lots[currentlotindex+self.direction]
         self.tourists_on_or_off_tram()
+        self.current_lot = self.lots[currentlotindex+self.direction]
     def tourists_on_or_off_tram(self):
         for tourist in self.tourists:
             if tourist.start.lot_number == self.current_lot.lot_number and tourist not in self.tram_tourists:
                 self.tram_tourists.append(tourist)
+                self.current_lot.remove_from_waitlist(tourist)
         for tourist in self.tram_tourists:
             if tourist.destination.lot_number == self.current_lot.lot_number:
                 self.tram_tourists.remove(tourist)
 
 
-
-
 class Tourist(object):
-    def __init__(self, start_lot, dest_lot):
+    def __init__(self, start_lot, dest_lot,tourist_id):
         self.start = start_lot
         self.destination = dest_lot
         self.arrived = False
+        self.tourist_id = tourist_id
     def __str__(self):
         pass
+
+
 def get_number_lots(question):
     while True:
         try:
