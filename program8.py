@@ -53,12 +53,11 @@ class Park(object):
             random_dest_lot = random.choice(k)
             tourist_list.append(Tourist(random.choice(self.lots),random_dest_lot))
         return tourist_list
-    def dest_tourist_list(self):
+    def calc_arrived_tourist(self):
         for person in self.tourists:
             if self.tram.current_lot.lot_number == person.destination.lot_number:
                 person.arrived = True
                 self.arrived_tourist.append(person.arrived)
-        return self.arrived_tourist
 
 
 class ParkingLot(object):
@@ -144,10 +143,9 @@ input_lots = get_number_lots("How many lots does the park have? (answer must be 
 
 
 mypark = Park(lots = input_lots,tourist_num= input_tourists)
-arrived_list = mypark.dest_tourist_list()
-while len(arrived_list) < len(mypark.tourists):
+while len(mypark.arrived_tourist) < len(mypark.tourists):
     mypark.tram.move()
-    arrived_list = mypark.dest_tourist_list()
+    mypark.calc_arrived_tourist()
 print("Fart")
 
 
