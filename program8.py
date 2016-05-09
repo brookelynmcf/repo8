@@ -1,17 +1,22 @@
 ########################################################################
 ##
 ## CS 101
-## Program # 6
+## Program # 8
 ## Name Brooke McFarland
 ## Email blmz99@mail.umkc.edu
 ##
-## PROBLEM : Describe the problem
+## PROBLEM : Simulate the dropping off and picking up of tourists.
 ##
 ## ALGORITHM : 
 ##      1. Write out the algorithm
 ## 
 ## ERROR HANDLING:
-##      Any Special Error handling to be noted.  Wager not less than 0. etc
+##      lots must be greater than 2 and less than 11
+##      Initial tourist count must be greater than or equal to 0 but less than 20
+##      tram must stay within range of number of lots from user input
+##      tram must move from left to right using positive and negative 1 for direction indicators
+##      waitlist must eventually reach 0 if everyone has been picked up and dropped off at their final destination
+##
 ##
 ## OTHER COMMENTS:
 ##      Any special comments
@@ -29,10 +34,7 @@ class Park(object):
         self.tourist_num = tourist_num
         self.arrived_tourist = []
     def __str__(self):
-        lot = 0
-        while lot <= lots_total:
-            lot += 1
-        print("{}==".format(lot))
+       return "Tram picked up {} passenger(s) at lot {}".format(len(self.tram.current_lot.wait_list),self.tram.current_lot.lot_number)
     def step(self):
         pass
     def __make_lots_list(self,num_lot):
@@ -59,16 +61,19 @@ class Park(object):
             if self.tram.current_lot.lot_number == person.destination.lot_number:
                 person.arrived = True
                 self.arrived_tourist.append(person.arrived)
+    def step(self):
+        self.tram.move()
 
 
 class ParkingLot(object):
     def __init__(self, lot_number):
         self.lot_number = lot_number
         self.wait_list = []
+        self.picked_up = 0
     def __str__(self):
-        pass
+        return "l{}({}) ==".format(self.lot_number,len(self.wait_list))
     def __repr__(self):
-        pass
+        return self.__repr__()
     def register_tourist(self,tourist):
         self.wait_list.append(tourist)
     def remove_from_waitlist(self,tourist):
@@ -104,6 +109,7 @@ class Tram(object):
         for tourist in self.tourists:
             if tourist.start.lot_number == self.current_lot.lot_number and tourist not in self.tram_tourists:
                 self.tram_tourists.append(tourist)
+                self.current_lot.picked_up += 1
                 self.current_lot.remove_from_waitlist(tourist)
         for tourist in self.tram_tourists:
             if tourist.destination.lot_number == self.current_lot.lot_number:
@@ -150,8 +156,10 @@ input_lots = get_number_lots("How many lots does the park have? (answer must be 
 
 
 mypark = Park(lots = input_lots,tourist_num= input_tourists)
+print(str(mypark))
 while len(mypark.arrived_tourist) < len(mypark.tourists):
-    mypark.tram.move()
+    mypark.step()
+    print(str(mypark))
     mypark.calc_arrived_tourist()
 print("Fart")
 
