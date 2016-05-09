@@ -69,9 +69,8 @@ class ParkingLot(object):
     def __init__(self, lot_number):
         self.lot_number = lot_number
         self.wait_list = []
-        self.picked_up = 0
     def __str__(self):
-        return "l{}({}) ==".format(self.lot_number,len(self.wait_list))
+        return " ==L{}({})".format(self.lot_number,len(self.wait_list))
     def __repr__(self):
         return self.__repr__()
     def register_tourist(self,tourist):
@@ -109,7 +108,6 @@ class Tram(object):
         for tourist in self.tourists:
             if tourist.start.lot_number == self.current_lot.lot_number and tourist not in self.tram_tourists:
                 self.tram_tourists.append(tourist)
-                self.current_lot.picked_up += 1
                 self.current_lot.remove_from_waitlist(tourist)
         for tourist in self.tram_tourists:
             if tourist.destination.lot_number == self.current_lot.lot_number:
@@ -151,15 +149,26 @@ def get_number_tourists(question):
         else:
             return answer
 
+def print_lot(park):
+    lot_str = ""
+    for lot in park.lots:
+        lot_str += str(lot)
+    print(lot_str[3:])
+
 input_tourists = get_number_tourists("How many tourists are in the park initially? (answer must be between 0 and 20)")
 input_lots = get_number_lots("How many lots does the park have? (answer must be between 2 and 11)")
+print("\n")
 
 
 mypark = Park(lots = input_lots,tourist_num= input_tourists)
 print(str(mypark))
+print_lot(mypark)
+
+
 while len(mypark.arrived_tourist) < len(mypark.tourists):
     mypark.step()
     print(str(mypark))
+    print_lot(mypark)
     mypark.calc_arrived_tourist()
 print("Fart")
 
